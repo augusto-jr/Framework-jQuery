@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <title>Hello, world!</title>
+        <script src="jquery-3.5.1.min.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+
+                $('.jogo,.animacao,.nav-jogo,.nav-animacao').hide();
+                $('.card-text,.front').hide();
+
+                function sleep (time) {
+                  return new Promise((resolve) => setTimeout(resolve, time));
+                }
+
+               let botao = null;
+                $('.nav-link').click(function(){
+                    botao = $(this).attr('id');
+                    if(botao == 'pergunta'){
+                        $('.pergunta,.nav-pergunta').show('fadeIn');
+                        $('.jogo,.animacao,.nav-jogo,.nav-animacao').hide('fadeOut');
+                        $('.card-text').hide();
+                    } else if(botao == 'jogo'){
+                        $('.jogo,.nav-jogo').show('fadeIn');
+                        $('.pergunta,.animacao,.nav-pergunta,.nav-animacao').hide('fadeOut');
+                        sleep(900).then(() => {
+                            $('.back').fadeOut();
+                            sleep(400).then(() => {
+                                $('.front').fadeIn();
+                            });
+                        });
+                    } else if(botao == 'animacao'){
+                        $('.animacao,.nav-animacao').show('fadeIn');
+                        $('.pergunta,.jogo,.nav-pergunta,.nav-jogo').hide('fadeOut');
+                    }
+                });
+
+                // PAGINA DE PERGUNTA
+                $('.slidetoggle').click(function(){
+                    $(this).closest('.card').find('.card-text').slideToggle();
+                });
+
+                $('.com-button').click(function(){
+                    if($(this).closest('.card').find('.card-text').css('display')=='none')
+                        $(this).closest('.card').find('.card-text').slideDown();
+                    else
+                        $(this).closest('.card').find('.card-text').slideUp();
+                });
+                $('img').click(function(){
+                    if($(this).closest('.card').find('.card-text').css('display')=='none')
+                        $(this).closest('.card').find('.card-text').slideDown();
+                    else
+                        $(this).closest('.card').find('.card-text').slideUp();
+                });
+
+                $('.text-danger').click(function(){ $('.alert-danger').fadeIn(); });
+                $('.text-info').click(function(){ $('.alert-info').fadeIn('slow'); });
+                $('.text-success').click(function(){$('.alert-success').fadeIn(2000);});
+                $('.home').click(function(){$('.alert-danger,.alert-info,.alert-success').fadeOut('slow');$('.card-text').fadeOut('slow');});
+                $('.toggle').click(function(){$('p').slideToggle();});
+
+                // PAGINA JOGO DE MEMÓRIA
+                var id,s,r,v,i=0;
+                $('.card').click(function() {
+                    id = [$(this).attr('id'),$(this).attr('class').substring(5)];
+                    if(s != 0) {
+                        $("#"+id[0]+" > .front").hide();
+                        $("#"+id[0]+" >  .back").fadeIn();
+                        v = id[0];
+                        r = id[1];
+                        s = 0;
+                    } else {
+                        $("#"+id[0]+" > .front").hide();
+                        $("#"+id[0]+" >  .back").fadeIn();
+                        if(r==id[1]) {
+                            if(i == 11) {
+                                sleep(500).then(() => {    
+                                    alert('Jogo finalizado');
+                                });
+                            } else {
+                                r = null;
+                                s = 1;
+                                i++;
+                            }
+                        } else {
+                            sleep(1500).then(() => {
+                                $("#"+id[0]+" >  .back,#"+v+" >  .back").hide();
+                                $("#"+id[0]+" > .front,#"+v+" > .front").fadeIn();
+                                r = null;
+                                s = 1;
+                            });
+                        }
+                    }
+                });
+
+                // PAGINA ANIMACAO
+                $('#quadrado').click(function() {
+                    $("#quadrado").animate({
+                        width:'400px',
+                        height:'400px'
+                    },'slow');
+                });
+
+                $('#bola').click(function() {
+                    $("#bola").animate({
+                        marginLeft:'50%'
+                    },'slow');
+                });
+
+                $('#imagem').click(function() {
+                    $("#imagem").animate({
+                        marginLeft:'50%',
+                        width:'400px',
+                        height:'400px'
+                    },'slow');
+                });
+                
+            });
+        </script>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="width: 100%; top: 0;position: fixed; z-index: 1;">
+            <a class="navbar-brand" href="#"><img src="img/ifmt.png" height="35"></a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto nav-pergunta">
+                    <li class="nav-item active">
+                        <a class="nav-link home" style="cursor: pointer">reset <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item"><a role="button" tabindex="0" class="nav-link text-danger" style="cursor: pointer">fadeIn()</a></li>
+                    <li class="nav-item"><a role="button" class="nav-link text-info" style="cursor: pointer">fadeIn('slow')</a></li>
+                    <li class="nav-item"><a role="button" class="nav-link text-success" style="cursor: pointer">fadeIn(2000)</a></li>
+                    <li class="nav-item"><a role="button" class="nav-link toggle" style="cursor: pointer">slideToggle()</a></li>
+                </ul>
+                <ul class="navbar-nav mr-auto nav-jogo">
+                    <li class="nav-item active">
+                        <a class="nav-link home" style="cursor: pointer">reset <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav mr-auto nav-animacao">
+                    <li class="nav-item active">
+                        <a class="nav-link home" style="cursor: pointer">limpar <span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item"><a role="button" tabindex="0" class="nav-link text-danger" style="cursor: pointer">fadeIn()</a></li>
+                    <li class="nav-item"><a role="button" class="nav-link text-info" style="cursor: pointer">fadeIn('slow')</a></li>
+                    <li class="nav-item"><a role="button" class="nav-link text-success" style="cursor: pointer">fadeIn(2000)</a></li>
+                    <li class="nav-item"><a role="button" class="nav-link toggle" style="cursor: pointer">slideToggle()</a></li>
+                </ul>
+                <ul class="navbar-nav float-right">
+                    <li class="nav-item"><a role="button" class="nav-link" id="pergunta" style="cursor: pointer"><b>PERGUNTA</b></a></li>
+                    <li class="nav-item"><a role="button" class="nav-link" id="jogo" style="cursor: pointer"><b>JOGO DE MEMÓRIA</b></a></li>
+                    <li class="nav-item"><a role="button" class="nav-link" id="animacao" style="cursor: pointer"><b>ANIMAÇÃO</b></a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container pergunta">
+            <div class="jumbotron jumbotron-fluid" style="margin-top: 60px;">
+                <div class="container">
+                    <h1 class="display-4">Perguntas</h1>
+                </div>
+            </div>
+            <div class="alert alert-danger mt-4" role="alert" style="display:none">This is a <b>DANGER</b> alert—check it out!</div>
+            <div class="alert alert-info mt-4" role="alert" style="display:none">This is a <b>INFO</b> alert—check it out!</div>
+            <div class="alert alert-success mt-4" role="alert" style="display:none">This is a <b>SUCCESS</b> alert—check it out!</div>
+            <div class="row mb-3">
+                <div class="col-sm-4 mt-3 mt-3">
+                    <div class="card">
+                        <img class="card-img-top" height="200" src="img/montanha.webp" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Qual a montanha mais alta do mundo?</h5>
+                            <p class="card-text">Monte Everest</p>
+                            <button class="btn btn-primary com-button">ver a resposta</button>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="col-sm-4 mt-3">
+                    <div class="card">
+                        <img class="card-img-top" height="200" src="img/chuveiro.webp" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">De onde é a invenção do chuveiro elétrico?</h5>
+                            <p class="card-text">Brasil</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 mt-3">
+                    <div class="card">
+                        <img class="card-img-top" height="200" src="img/mapa.jpg" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Quais o menor e o maior país do mundo?</h5>
+                            <p class="card-text">Vaticano e Rússia</p>
+                            <button class="btn btn-primary com-button">ver a resposta</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Qual o nome do presidente do Brasil que ficou conhecido como Jango?</h5>
+                            <p class="card-text">João Goulart</p>
+                            <button class="btn btn-primary slidetoggle">ver a resposta</button>
+                        </div>
+                        <img class="card-img-top" height="200" src="img/presidentes-do-brasil.jpg" alt="Card image cap">
+                    </div>
+                </div>
+                <div class="col-sm-4 mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Atualmente, quantos elementos químicos a tabela periódica possui?</h5>
+                            <p class="card-text">118</p>
+                            <button class="btn btn-primary slidetoggle">ver a resposta</button>
+                        </div>
+                        <img class="card-img-top" height="200" src="img/quimica.jpg" alt="Card image cap">
+                    </div>
+                </div>
+                <div class="col-sm-4 mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Qual o número mínimo de jogadores numa partida de futebol?</h5>
+                            <p class="card-text">7</p>
+                            <button class="btn btn-primary slidetoggle">ver a resposta</button>
+                        </div>
+                        <img class="card-img-top" height="200" src="img/futebol.jpg" alt="Card image cap">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container jogo">
+            <div class="jumbotron jumbotron-fluid" style="margin-top: 60px;">
+                <div class="container">
+                    <h1 class="display-4">Jogo de Memória</h1>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-2 mt-3">
+                    <div class="card 2" id="card-1">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/2.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 4" id="card-2">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/4.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 4" id="card-3">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/4.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 3" id="card-4">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/3.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 7" id="card-5">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/7.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 10" id="card-6">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/10.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 1" id="card-7">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/1.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 5" id="card-8">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/5.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 2" id="card-9">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/2.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 9" id="card-10">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/9.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 1" id="card-11">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/1.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 8" id="card-12">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/8.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 3" id="card-13">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/3.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 6" id="card-14">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/6.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 9" id="card-15">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/9.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 8" id="card-16">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/8.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 6" id="card-17">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/6.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 10" id="card-18">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/10.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 12" id="card-19">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/12.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 11" id="card-20">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/11.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 5" id="card-21">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/5.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 11" id="card-22">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/11.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 12" id="card-23">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/12.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+                <div class="col-sm-2 mt-3">
+                    <div class="card 7" id="card-24">
+                        <div class="front"><img class="card-img-top img" height="100" src="img/capa.png" alt="Card image cap"></div>
+                        <div class="back"><img class="card-img-top img" height="100" src="img/7.jpg" alt="Card image cap"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container animacao">
+            <div class="jumbotron jumbotron-fluid" style="margin-top: 60px;">
+                <div class="container">
+                    <h1 class="display-4">Animação</h1>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-12 p-3">
+                    <div id="quadrado"></div>
+                </div>
+                <div class="col-sm-12 p-3">
+                    <div id="bola"></div>
+                </div>
+                <div class="col-sm-12 p-3">
+                    <div id="imagem"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
+        
+    </body>
+</html>
